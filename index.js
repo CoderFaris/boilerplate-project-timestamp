@@ -25,6 +25,40 @@ app.get("/api/hello", function (req, res) {
 });
 
 
+app.get("/api/:date?", function(req, res) {
+  let dateParam = req.params.date;
+  let date;
+
+  
+  if (!dateParam) {
+    date = new Date();
+  } else {
+    
+
+    // checking digits only using regex
+    if (/^\d+$/.test(dateParam)) {
+      date = new Date(parseInt(dateParam));
+    } else {
+      date = new Date(dateParam);
+    }
+  }
+
+  
+  if (isNaN(date.getTime())) {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  
+  let unix_timestamp = date.getTime();
+  let date_utc = date.toUTCString();
+
+  res.json({
+    unix: unix_timestamp,
+    utc: date_utc
+  });
+});
+
+
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
